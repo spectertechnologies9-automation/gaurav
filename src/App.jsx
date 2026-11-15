@@ -19,6 +19,7 @@ import Tech from './components/Tech.jsx';
 import Timeline from './components/Timeline.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,7 +28,6 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [loadPct, setLoadPct] = useState(0);
   const [active, setActive] = useState('top');
-  const curtain = useRef(null);
   const reduce = useRef(prefersReducedMotion());
 
   // ── loader: wait for fonts + hero image, with a hard cap
@@ -97,21 +97,12 @@ export default function App() {
     };
   }, [ready]);
 
-  // ── page transition: coloured curtain wipes when a detail view opens/changes
+  // ── page transition: route changes immediately; the coloured curtain is a purely
+  // decorative CSS animation, so it can never block navigation or get stuck on screen.
+  const [wipe, setWipe] = useState(0);
   const openRoute = useCallback((path) => {
-    const go = () => {
-      window.location.hash = `/${path}`;
-    };
-    const el = curtain.current;
-    if (!el || reduce.current) return go();
-    const bars = el.querySelectorAll('i');
-    gsap.killTweensOf(bars);
-    gsap
-      .timeline()
-      .set(bars, { yPercent: -101 })
-      .to(bars, { yPercent: 0, duration: 0.28, stagger: 0.04, ease: 'power3.in' })
-      .add(go)
-      .to(bars, { yPercent: 101, duration: 0.3, stagger: 0.04, ease: 'power3.out', delay: 0.08 });
+    window.location.hash = `/${path}`;
+    if (!reduce.current) setWipe((n) => n + 1);
   }, []);
 
   // ── per-route document title
@@ -133,7 +124,7 @@ export default function App() {
           <span className="eyebrow">Booting universe… {loadPct}%</span>
         </div>
       </div>
-      <div className="curtain" ref={curtain} aria-hidden="true"><i /><i /><i /><i /><i /></div>
+      <div key={wipe} className={`curtain${wipe ? ' go' : ''}`} aria-hidden="true"><i /><i /><i /><i /><i /></div>
 
       <Header active={active} />
       <main>
@@ -149,8 +140,16 @@ export default function App() {
       </main>
       <Footer />
 
-      {project && <ProjectModal key={project.id} project={project} onClose={closeRoute} onOpen={openRoute} />}
-      {company && <CompanyModal key={company.id} company={company} onClose={closeRoute} onOpen={openRoute} />}
+      {project && (
+        <ErrorBoundary key={project.id} onClose={closeRoute}>
+          <ProjectModal project={project} onClose={closeRoute} onOpen={openRoute} />
+        </ErrorBoundary>
+      )}
+      {company && (
+        <ErrorBoundary key={company.id} onClose={closeRoute}>
+          <CompanyModal company={company} onClose={closeRoute} onOpen={openRoute} />
+        </ErrorBoundary>
+      )}
     </>
   );
 }

@@ -22,7 +22,10 @@ export default function Companies({ onOpen }) {
                 <div className="co__body">
                   <div className="co__chips">
                     <span className="tag dark">{RELATION_LABEL[c.relation]}</span>
-                    {c.role && <span className="tag" style={{ '--c': 'var(--white)' }}>{c.role}</span>}
+                    {c.verified && <span className="tag" style={{ '--c': 'var(--mint)' }}>✓ Verified</span>}
+                    {c.roles?.map((r) => (
+                      <span key={r.title + r.period} className="tag" style={{ '--c': 'var(--white)' }}>{r.title} · {r.period}</span>
+                    ))}
                   </div>
                   <h3 className="co__name">{c.name}</h3>
                   <p>{c.tagline}</p>
@@ -48,7 +51,7 @@ export default function Companies({ onOpen }) {
         </div>
         <p className="co-note box reveal" style={{ '--c': 'var(--white)' }}>
           <span aria-hidden="true">ⓘ</span>
-          <span>Ownership and role are shown only where confirmed. Edit <code>role</code> in <code>src/data/companies.js</code> to state your exact relationship (e.g. “Founder”).</span>
+          <span>Roles are shown only where confirmed. Edit <code>roles</code> in <code>src/data/companies.js</code>.</span>
         </p>
       </div>
     </section>
@@ -65,7 +68,7 @@ export function CompanyModal({ company: c, onClose, onOpen }) {
         </div>
         <div className="m-tags">
           <span className="tag dark">{RELATION_LABEL[c.relation]}</span>
-          {c.role && <span className="tag" style={{ '--c': 'var(--white)' }}>{c.role}</span>}
+          {c.verified && <span className="tag" style={{ '--c': 'var(--mint)' }}>✓ Verified</span>}
         </div>
         <h2 style={c.color === 'blue' ? { color: '#fff' } : undefined}>{c.name}</h2>
         <p className="h-md" style={{ textTransform: 'none', fontFamily: 'var(--f-body)', fontWeight: 700, color: c.color === 'blue' ? '#fff' : undefined }}>{c.tagline}</p>
@@ -80,6 +83,16 @@ export function CompanyModal({ company: c, onClose, onOpen }) {
             </a>
           )}
         </div>
+        {c.roles && (
+          <div className="m-blk box wide" style={{ '--c': 'var(--mint)' }}>
+            <h3>My role</h3>
+            <ul className="m-list">
+              {c.roles.map((r) => (
+                <li key={r.title + r.period}><b>{r.title}</b>&nbsp;· {r.period}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="m-blk box wide" style={{ '--c': `var(--${c.accent})` }}>
           <h3>Capabilities</h3>
           <div className="m-tags">

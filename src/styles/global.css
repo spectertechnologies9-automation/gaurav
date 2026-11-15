@@ -515,3 +515,9 @@ a.link:active { transform: translate(4px, 4px); box-shadow: 0 0 0; }
 .footer__contact a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 14px; border: 3px solid var(--paper); color: var(--paper); text-decoration: none; font: 700 .76rem var(--f-mono); transition: background .12s, color .12s, transform .12s; overflow-wrap: anywhere; }
 .footer__contact a:hover { background: var(--yellow); color: var(--black); border-color: var(--yellow); transform: translate(-2px, -2px); }
 .footer__contact a.hot { background: var(--pink); color: var(--black); border-color: var(--pink); }
+
+/* decorative page-transition curtain: always ends off-screen */
+.curtain i { transform: translateY(-101%); }
+.curtain.go i { animation: wipe .7s cubic-bezier(.7,0,.3,1) both; }
+.curtain.go i:nth-child(2) { animation-delay: .04s; } .curtain.go i:nth-child(3) { animation-delay: .08s; } .curtain.go i:nth-child(4) { animation-delay: .12s; } .curtain.go i:nth-child(5) { animation-delay: .16s; }
+@keyframes wipe { 0% { transform: translateY(-101%); } 40%, 55% { transform: translateY(0); } 100% { transform: translateY(101%); } }
