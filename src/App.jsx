@@ -20,6 +20,7 @@ import Timeline from './components/Timeline.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
+import ContactDock from './components/ContactDock.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -139,6 +140,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <ContactDock />
 
       {project && (
         <ErrorBoundary key={project.id} onClose={closeRoute}>
